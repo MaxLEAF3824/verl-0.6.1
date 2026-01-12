@@ -116,6 +116,7 @@ class SoftGenerationConfig(BaseConfig):
     
     enable: bool = False  # Whether to enable Soft Generation
     max_think_len: int = 512 # Maximum length for the "thinking" phase in soft thinking
+    logprobs: int = 20 # Number of log probabilities to consider during soft generation
     eot_string: str = "</think>"  # End-of-thinking string marker
     prefill_string: str = ""  # String to indicate the start of the thinking phase
     enable_cold_stop: bool = False  # Whether to enable cold stopping in Soft Thinking
