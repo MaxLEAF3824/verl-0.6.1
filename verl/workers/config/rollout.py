@@ -28,6 +28,7 @@ __all__ = [
     "TraceConfig",
     "ServerConfig",
     "PrometheusConfig",
+    "SoftGenerationConfig",
     "RolloutConfig",
 ]
 
@@ -107,6 +108,19 @@ class PrometheusConfig(BaseConfig):
     # Specify served_model_name to avoid displaying overly long model paths in Grafana
     served_model_name: Optional[str] = None
 
+@dataclass
+class SoftGenerationConfig(BaseConfig):
+    """
+    Configuration for Soft Generation (Soft Thinking) feature
+    """
+    
+    enable: bool = False  # Whether to enable Soft Generation
+    max_think_len: int = 512 # Maximum length for the "thinking" phase in soft thinking
+    eot_string: str = "</think>"  # End-of-thinking string marker
+    prefill_string: str = ""  # String to indicate the start of the thinking phase
+    enable_cold_stop: bool = False  # Whether to enable cold stopping in Soft Thinking
+    cold_stop_len_threshold: int = 128  # Length threshold to Soft Thinking's cold stop
+    cold_stop_entropy_threshold: float = 0.01  # Entropy threshold for triggering cold stop
 
 @dataclass
 class RolloutConfig(BaseConfig):
@@ -198,6 +212,8 @@ class RolloutConfig(BaseConfig):
 
     skip_tokenizer_init: bool = False
 
+    soft_generation: SoftGenerationConfig = field(default_factory=SoftGenerationConfig)
+    
     def __post_init__(self):
         """Validate the rollout config"""
         if self.expert_parallel_size > 1:

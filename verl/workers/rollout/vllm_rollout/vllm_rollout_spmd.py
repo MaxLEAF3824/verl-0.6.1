@@ -263,8 +263,15 @@ class vLLMRollout(BaseRollout):
 
         # supporting adding any sampling params from the config file
         for k in config.keys():
-            if hasattr(SamplingParams(), str(k)) and k != "seed":
+            if hasattr(SamplingParams(), str(k)) and k != "seed" and k != "soft_generation":
                 kwargs[k] = config.get(k)
+        
+        from vllm.sampling_params import SoftGenerationParams
+        soft_generation_params = SoftGenerationParams()
+        for k in config.soft_generation.keys():
+            setattr(soft_generation_params, str(k), config.soft_generation[k])
+        kwargs["soft_generation"] = soft_generation_params
+
         kwargs["n"] = 1  # already repeat in ray_trainer
         print(f"kwargs: {kwargs}")
         self.sampling_params = SamplingParams(**kwargs)
